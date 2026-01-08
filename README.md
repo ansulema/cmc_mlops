@@ -1,38 +1,42 @@
-# SMS Spam Classifier
+# Spam Classifier
 
 ## Цель проекта
-Построить модель классификации SMS на `spam/ham` по тексту (fine-tuning HF Transformers), чтобы автоматически фильтровать спам-сообщения и минимизировать ложные блокировки “хороших” сообщений.
+Классификация сообщений на spam/ham (fine-tuning DistilBERT) для автоматической фильтрации спама.
 
-## Целевые метрики для продакшена
+## Целевые метрики
+### Качество модели (на test)
+- **F1-score (spam)** >= 0.9
+- **Recall (spam)** >= 0.85
+- **FPR (ham->spam)** <= 1%
+
 ### Сервис (инференс)
-- **p95 время отклика** ≤ **200 мс** (CPU, batch=1)
-- **Доля неуспешных запросов** (5xx/timeouts) ≤ **1%**
-- **Ресурсы**: RAM ≤ **1 ГБ**, CPU ≤ **1 vCPU** (или в рамках выделенного SLA окружения)
+- p95 latency <= 200 мс (CPU, batch=1)
+- Доля 5xx/timeouts <= 1%
 
-### Качество модели (offline, на test)
-- **Accuracy** ≥ **0.95**
-- **F1-score (spam)** ≥ **0.93**
-- **Recall (spam)** ≥ **0.95** (не пропускать спам)
-- **False Positive Rate (ham→spam)** ≤ **1%** (не блокировать нормальные SMS)
+## Данные
+**Russian Spam Detection Dataset**: https://huggingface.co/datasets/darkQibit/russian-spam-detection  
+- ~4.5M примеров (92% ham, 8% spam)
+- Колонки: `message`, `label` (0/1)
 
-## Набор данных
-**SMS Spam Collection Dataset (Kaggle)**  
-Источник: https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset  
-Поля:
-- `v1` — метка (`ham`/`spam`)
-- `v2` — текст сообщения  
-Подготовка:
-- переименовать в `label`, `text`
-- удалить пустые/дубликаты (если есть)
-- split: train/val/test = 80/10/10 со стратификацией по `label`
+## Установка
+```bash
+pip install -r requirements.txt
+```
 
-## План экспериментов
-1) **Baseline**: TF-IDF + Logistic Regression.  
-   Метрики: Accuracy, F1(spam), Recall(spam), FPR.
+## Использование
+```bash
+# Скачать данные
+python download_data.py
 
-2) **HF fine-tuning**: модель на основе bert архитектуры.  
-   Подбор: learning rate, batch size, epochs.
+# Обучение
+python train.py --config config.yaml
 
-3) **Подбор порога** вероятности под ограничения на FPR/Recall.
+# Инференс
+python inference.py --model ./spam_classifier
+```
 
-4) **Финальная оценка** на test + сохранение модели в HF-формате (model + tokenizer).
+## Структура
+- `config.yaml` — параметры обучения
+- `train.py` — скрипт обучения
+- `inference.py` — примеры + интерактивный режим
+- `download_data.py` — скачивание датасета
