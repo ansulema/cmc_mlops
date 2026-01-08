@@ -1,5 +1,5 @@
 # Data
-data_path: "russian_spam.csv"
+data_path: "data/russian_spam.csv"
 text_column: "message"
 label_column: "label"
 
@@ -24,5 +24,5 @@ random_seed: 42
 max_train_samples: 100000
 
 # Output
-output_dir: "./spam_classifier"
+output_dir: "models/spam_classifier"
 logging_steps: 100

@@ -67,8 +67,8 @@ def interactive_mode(tokenizer, model):
 
 def main():
     parser = argparse.ArgumentParser(description="Spam classifier inference")
-    parser.add_argument("--model", type=str, default="./spam_classifier_ru", help="Path to model")
-    parser.add_argument("--data", type=str, default="russian_spam.csv", help="Path to data for examples")
+    parser.add_argument("--model", type=str, default="models/spam_classifier", help="Path to model")
+    parser.add_argument("--data", type=str, default="data/russian_spam.csv", help="Path to data for examples")
     parser.add_argument("--text-col", type=str, default="message", help="Text column name")
     parser.add_argument("--label-col", type=str, default="label", help="Label column name")
     parser.add_argument("--examples", type=int, default=3, help="Number of examples per class")
