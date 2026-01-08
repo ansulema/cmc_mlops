@@ -1,0 +1,11 @@
+# Data
+data/
+
+# Models
+models/
+
+# Python
+__pycache__/
+
+# Pytest
+.pytest_cache/
