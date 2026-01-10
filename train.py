@@ -29,14 +29,42 @@ def load_config(config_path: str) -> dict:
         return yaml.safe_load(f)
 
 
+def log_data_stats(df: pd.DataFrame, cfg: dict, logger: logging.Logger):
+    """Log basic data statistics for validation."""
+    label_col = cfg["label_column"]
+    text_col = cfg["text_column"]
+    
+    logger.info("Data statistics:")
+    logger.info(f"  Total samples: {len(df)}")
+    logger.info(f"  Label distribution: {df[label_col].value_counts().to_dict()}")
+    logger.info(f"  Spam ratio: {df[label_col].mean():.2%}")
+    logger.info(f"  Avg text length: {df[text_col].str.len().mean():.0f} chars")
+    logger.info(f"  Min text length: {df[text_col].str.len().min()}")
+    logger.info(f"  Max text length: {df[text_col].str.len().max()}")
+
+
 def load_and_preprocess_data(cfg: dict, logger: logging.Logger):
     logger.info(f"Loading data from {cfg['data_path']}")
     df = pd.read_csv(cfg["data_path"])
+    
+    # Validate required columns
+    for col in [cfg["label_column"], cfg["text_column"]]:
+        if col not in df.columns:
+            raise ValueError(f"Missing required column: {col}")
+    
     df = df[[cfg["label_column"], cfg["text_column"]]].dropna().drop_duplicates()
     
     # Map string labels to int if needed
     if df[cfg["label_column"]].dtype == object:
         df[cfg["label_column"]] = df[cfg["label_column"]].map({"ham": 0, "spam": 1})
+    
+    # Validate labels
+    unique_labels = set(df[cfg["label_column"]].unique())
+    if not unique_labels.issubset({0, 1}):
+        raise ValueError(f"Labels must be 0 or 1, got: {unique_labels}")
+    
+    # Log statistics before sampling
+    log_data_stats(df, cfg, logger)
     
     # Sample if max_train_samples specified
     if cfg.get("max_train_samples") and len(df) > cfg["max_train_samples"]:
