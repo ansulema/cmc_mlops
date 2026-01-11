@@ -4,7 +4,7 @@ import pandas as pd
 
 parser = argparse.ArgumentParser(description="Download spam dataset")
 parser.add_argument("--output-dir", type=str, default="data", help="Output directory")
-parser.add_argument("--sample-frac", type=float, default=0.125, help="Fraction of data to keep (1/8 by default)")
+parser.add_argument("--sample-frac", type=float, default=1/32, help="Fraction of data to keep (1/32 by default)")
 args = parser.parse_args()
 
 os.makedirs(args.output_dir, exist_ok=True)

@@ -11,7 +11,7 @@ max_length: 128
 # Training
 learning_rate: 0.00002
 batch_size: 32
-num_epochs: 6
+num_epochs: 1
 weight_decay: 0.01
 warmup_steps: 100
 
@@ -21,7 +21,7 @@ val_ratio: 0.5
 random_seed: 42
 
 # Sampling (for faster training, use subset)
-max_train_samples: 500000
+max_train_samples: 5000
 
 # Output
 output_dir: "models/spam_classifier"
