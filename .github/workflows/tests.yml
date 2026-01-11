@@ -1,10 +1,10 @@
-вмсname: Tests
+name: Tests
 
 on:
   push:
-    branches: [main, master, hw1]
+    branches: [main, master, hw1, hw2]
   pull_request:
-    branches: [main, master, hw1]
+    branches: [main, master, hw1, hw2]
 
 jobs:
   test:
