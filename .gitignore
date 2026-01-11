@@ -1,11 +1,9 @@
-# Data
-data/
-
-# Models
-models/
-
 # Python
 __pycache__/
 
 # Pytest
 .pytest_cache/
+
+# Large data files (tracked by DVC)
+*.csv
+models/spam_classifier/

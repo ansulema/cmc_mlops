@@ -1,0 +1,32 @@
+stages:
+  prepare:
+    cmd: python prepare.py --config config.yaml
+    deps:
+      - prepare.py
+      - config.yaml
+      - data/russian_spam.csv
+    outs:
+      - data/train.csv
+      - data/val.csv
+      - data/test.csv
+
+  train:
+    cmd: python train.py --config config.yaml
+    deps:
+      - train.py
+      - config.yaml
+      - data/train.csv
+      - data/val.csv
+    outs:
+      - models/spam_classifier
+
+  evaluate:
+    cmd: python evaluate.py --config config.yaml
+    deps:
+      - evaluate.py
+      - config.yaml
+      - data/test.csv
+      - models/spam_classifier
+    metrics:
+      - metrics.json:
+          cache: false
