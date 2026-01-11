@@ -28,6 +28,7 @@
 - Сырые данные: `data/russian_spam.csv` (под DVC)
 - Подготовленные: `data/train.csv`, `data/val.csv`, `data/test.csv`
 - Модель: `models/spam_classifier/` (генерируется пайплайном)
+- MLflow эксперименты: `mlruns/`
 
 ### DVC Remote
 Удаленное хранилище (Google Drive, Яндекс Диск) не настроено из-за технических ограничений.
@@ -60,18 +61,38 @@ dvc repro evaluate  # оценка на тесте
 
 ### Стейджи пайплайна
 1. **prepare** — загрузка, предобработка, split на train/val/test
-2. **train** — fine-tuning DistilBERT
+2. **train** — fine-tuning DistilBERT + MLflow tracking
 3. **evaluate** — метрики на тестовой выборке -> `metrics.json`
+
+## MLflow
+
+### Просмотр результатов
+```bash
+mlflow ui
+# Открыть http://localhost:5000
+```
+
+### Что логируется
+- **Параметры:** model_name, learning_rate, batch_size, num_epochs, и др.
+- **Метрики:** accuracy, f1_spam, recall_spam, fpr
+- **Артефакты:** config.yaml, dvc.lock
+- **Теги:** dvc_data_hash (хеш датасета)
+
+### Запуск обучения
+```bash
+python train.py --config config.yaml --experiment spam-classifier
+```
 
 ## Структура проекта
 ```
 config.yaml          # параметры обучения
 dvc.yaml             # DVC pipeline
 dvc.lock             # зафиксированные версии
+mlruns/              # MLflow эксперименты
 
 prepare.py           # подготовка данных
-train.py             # обучение модели  
-evaluate.py          # оценка модели
+train.py             # обучение модели + MLflow
+evaluate.py          # оценка модели + MLflow
 inference.py         # инференс + интерактивный режим
 download_data.py     # скачивание датасета с HF
 

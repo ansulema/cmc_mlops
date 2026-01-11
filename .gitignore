@@ -7,4 +7,6 @@ __pycache__/
 # Large data files (tracked by DVC)
 *.csv
 models/spam_classifier/
-/test_upload.txt
+
+# MLflow
+mlruns/
