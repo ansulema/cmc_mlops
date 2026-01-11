@@ -28,14 +28,22 @@
 - Сырые данные: `data/russian_spam.csv` (под DVC)
 - Подготовленные: `data/train.csv`, `data/val.csv`, `data/test.csv`
 - Модель: `models/spam_classifier/` (генерируется пайплайном)
-- DVC remote: локальное хранилище (можно заменить на GDrive/S3)
+
+### DVC Remote
+Удаленное хранилище (Google Drive, Яндекс Диск) не настроено из-за технических ограничений.
+Данные нужно скачать скриптом `download_data.py`.
 
 ## Быстрый старт
 ```bash
 git clone https://github.com/ansulema/cmc_mlops.git
 cd cmc_mlops
+git checkout hw2
 pip install -r requirements.txt
-dvc pull
+
+# Скачать данные с HuggingFace
+python download_data.py
+
+# Запустить пайплайн
 dvc repro
 ```
 

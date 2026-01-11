@@ -1,7 +1,4 @@
 [core]
     remote = myremote
 ['remote "myremote"']
-    url = webdavs://webdav.yandex.ru/
-    user = andreisulema
-    password = aatltvexcoauzjzp
-    timeout = 600
+    url = /home/asulema/dvc_storage
