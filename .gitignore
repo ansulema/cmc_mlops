@@ -10,3 +10,6 @@ models/spam_classifier/
 
 # MLflow
 mlruns/
+
+# Docker output
+output/

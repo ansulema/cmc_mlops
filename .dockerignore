@@ -26,6 +26,9 @@ __pycache__/
 # Tests
 tests/
 
+# Output
+output/
+
 # Other
 *.md
 *.lock

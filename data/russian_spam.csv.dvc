@@ -1,5 +1,5 @@
 outs:
-- md5: 0801ca1479ccebb7d6523a033e1d22ac
-  size: 105703192
+- md5: 8d9f664bc249653813b2ae4e83e2e772
+  size: 26436321
   hash: md5
   path: russian_spam.csv

@@ -5,12 +5,12 @@ stages:
     deps:
     - path: config.yaml
       hash: md5
-      md5: cc0df7bc66c97d55a36ce7c3f64db6f0
-      size: 469
+      md5: a879aad2f89aab640b88c25e38e3817c
+      size: 467
     - path: data/russian_spam.csv
       hash: md5
-      md5: 9f58ea47dc241f6debce5b3614d66140
-      size: 846344888
+      md5: 8d9f664bc249653813b2ae4e83e2e772
+      size: 26436321
     - path: prepare.py
       hash: md5
       md5: 2cc7f37feb7eb828b3ab4b0fa0722132
@@ -18,13 +18,63 @@ stages:
     outs:
     - path: data/test.csv
       hash: md5
-      md5: 0b9f42eb16fe41dd917bf767d606b44e
-      size: 18731287
+      md5: 7bb180b4b6d4553543cefd3c1b54ccf1
+      size: 186934
     - path: data/train.csv
       hash: md5
-      md5: b73fcbdcfb9d79428ce51d6444bc9a49
-      size: 56371208
+      md5: 0e54296f8e6e56671a1b39f873e269e3
+      size: 564235
     - path: data/val.csv
       hash: md5
-      md5: 804f2a06f17b0ea63dd22304aa39dcc3
-      size: 18733594
+      md5: cfcb568d51429a17cb61d2c1d00c000a
+      size: 178411
+  train:
+    cmd: python train.py --config config.yaml
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: a879aad2f89aab640b88c25e38e3817c
+      size: 467
+    - path: data/train.csv
+      hash: md5
+      md5: 0e54296f8e6e56671a1b39f873e269e3
+      size: 564235
+    - path: data/val.csv
+      hash: md5
+      md5: cfcb568d51429a17cb61d2c1d00c000a
+      size: 178411
+    - path: train.py
+      hash: md5
+      md5: 9b6427ec2bdfe9a9c5a624b1652ee134
+      size: 5061
+    outs:
+    - path: models/spam_classifier
+      hash: md5
+      md5: 07e3f2ba0f4c26b940f5a512ff26d84a.dir
+      size: 1072364352
+      nfiles: 14
+  evaluate:
+    cmd: python evaluate.py --config config.yaml
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: a879aad2f89aab640b88c25e38e3817c
+      size: 467
+    - path: data/test.csv
+      hash: md5
+      md5: 7bb180b4b6d4553543cefd3c1b54ccf1
+      size: 186934
+    - path: evaluate.py
+      hash: md5
+      md5: 43bf3e2137aaf8d0bd0d064aa652f901
+      size: 2760
+    - path: models/spam_classifier
+      hash: md5
+      md5: 07e3f2ba0f4c26b940f5a512ff26d84a.dir
+      size: 1072364352
+      nfiles: 14
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 0e189ed5e27f98ac30add29730a0a7d4
+      size: 259
