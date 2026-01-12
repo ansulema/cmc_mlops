@@ -48,6 +48,47 @@ python download_data.py
 dvc repro
 ```
 
+## Docker
+
+### Сборка образа
+```bash
+# Убедитесь что модель обучена (models/spam_classifier/)
+docker build -t ml-app:v1 .
+```
+
+### Запуск инференса
+```bash
+# Подготовить входной файл input.csv с колонкой 'text'
+docker run --rm \
+  -v $(pwd)/input.csv:/app/input.csv \
+  -v $(pwd)/output:/app/output \
+  ml-app:v1 \
+  --input_path /app/input.csv \
+  --output_path /app/output/preds.csv
+```
+
+### Формат данных
+
+**Входной файл (input.csv):**
+```csv
+text
+"Hello, how are you?"
+"WIN FREE PRIZE NOW! Call 123456"
+```
+
+**Выходной файл (preds.csv):**
+```csv
+label,class_id,confidence,prob_ham,prob_spam
+ham,0,0.95,0.95,0.05
+spam,1,0.92,0.08,0.92
+```
+
+### Параметры скрипта
+- `--input_path` — путь к входному CSV
+- `--output_path` — путь к выходному CSV
+- `--text_column` — имя колонки с текстом (по умолчанию: text)
+- `--threshold` — порог классификации (по умолчанию: 0.5)
+
 ## DVC Pipeline
 ```bash
 # Запуск всего пайплайна
@@ -78,13 +119,9 @@ mlflow ui
 - **Артефакты:** config.yaml, dvc.lock
 - **Теги:** dvc_data_hash (хеш датасета)
 
-### Запуск обучения
-```bash
-python train.py --config config.yaml --experiment spam-classifier
-```
-
 ## Структура проекта
 ```
+Dockerfile           # Docker образ для инференса
 config.yaml          # параметры обучения
 dvc.yaml             # DVC pipeline
 dvc.lock             # зафиксированные версии
@@ -96,6 +133,9 @@ evaluate.py          # оценка модели + MLflow
 inference.py         # инференс + интерактивный режим
 download_data.py     # скачивание датасета с HF
 
+src/
+  predict.py         # batch prediction для Docker
+
 data/
   russian_spam.csv   # сырые данные (DVC)
   train.csv          # train split
@@ -105,23 +145,8 @@ data/
 models/
   spam_classifier/   # обученная модель
 
-src/                 # модули для тестов
 tests/               # unit тесты
-
 .github/workflows/   # CI: автозапуск тестов
-```
-
-## Версионирование
-```bash
-# Сохранить текущую версию
-dvc push
-
-# Восстановить версию
-git checkout <commit>
-dvc pull
-
-# Переключение между версиями данных/моделей
-dvc checkout
 ```
 
 ## Тестирование

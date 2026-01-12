@@ -1,0 +1,31 @@
+# Data files
+*.csv
+data/
+
+# DVC
+.dvc/
+*.dvc
+
+# MLflow
+mlruns/
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Tests
+tests/
+
+# Other
+*.md
+*.lock
