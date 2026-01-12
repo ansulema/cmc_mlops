@@ -91,6 +91,8 @@ spam,1,0.92,0.08,0.92
 
 ## TorchServe (онлайн-сервис)
 
+> **Важно:** Сначала обучите модель (`dvc repro`), затем собирайте TorchServe.
+
 ### Сборка MAR-архива
 ```bash
 cd torchserve
@@ -106,6 +108,9 @@ docker build -t spam-serve:v1 .
 ### Запуск сервиса
 ```bash
 docker run -d -p 8080:8080 -p 8081:8081 --name spam-serve spam-serve:v1
+
+# Если порт 8080 занят, используйте другой:
+# docker run -d -p 8090:8080 -p 8091:8081 --name spam-serve spam-serve:v1
 ```
 
 ### REST API
