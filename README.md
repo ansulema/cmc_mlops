@@ -89,6 +89,62 @@ spam,1,0.92,0.08,0.92
 - `--text_column` — имя колонки с текстом (по умолчанию: text)
 - `--threshold` — порог классификации (по умолчанию: 0.5)
 
+## TorchServe (онлайн-сервис)
+
+### Сборка MAR-архива
+```bash
+cd torchserve
+./build_mar.sh
+```
+
+### Сборка Docker образа
+```bash
+cd torchserve
+docker build -t spam-serve:v1 .
+```
+
+### Запуск сервиса
+```bash
+docker run -d -p 8080:8080 -p 8081:8081 --name spam-serve spam-serve:v1
+```
+
+### REST API
+
+**Prediction endpoint:**
+```bash
+curl -X POST http://localhost:8080/predictions/spam_classifier \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Congratulations! You won $1000000!"}'
+```
+
+**Ответ:**
+```json
+{
+  "label": "spam",
+  "class_id": 1,
+  "confidence": 0.92,
+  "prob_ham": 0.08,
+  "prob_spam": 0.92
+}
+```
+
+**Health check:**
+```bash
+curl http://localhost:8080/ping
+```
+
+**Model info:**
+```bash
+curl http://localhost:8081/models/spam_classifier
+```
+
+### Конфигурация (torchserve/config.properties)
+- `inference_address` — адрес для предсказаний (порт 8080)
+- `management_address` — адрес управления (порт 8081)
+- `batchSize` — размер батча (8)
+- `maxBatchDelay` — макс. задержка батча в мс (100)
+- `responseTimeout` — таймаут ответа в сек (120)
+
 ## DVC Pipeline
 ```bash
 # Запуск всего пайплайна
@@ -121,7 +177,7 @@ mlflow ui
 
 ## Структура проекта
 ```
-Dockerfile           # Docker образ для инференса
+Dockerfile           # Docker образ для batch инференса
 config.yaml          # параметры обучения
 dvc.yaml             # DVC pipeline
 dvc.lock             # зафиксированные версии
@@ -135,6 +191,13 @@ download_data.py     # скачивание датасета с HF
 
 src/
   predict.py         # batch prediction для Docker
+
+torchserve/          # TorchServe online service
+  handler.py         # кастомный обработчик
+  Dockerfile         # образ на базе pytorch/torchserve
+  config.properties  # конфигурация сервиса
+  build_mar.sh       # скрипт сборки .mar архива
+  model-store/       # MAR архивы (генерируется)
 
 data/
   russian_spam.csv   # сырые данные (DVC)

@@ -13,3 +13,6 @@ mlruns/
 
 # Docker output
 output/
+
+# TorchServe artifacts
+torchserve/model-store/
