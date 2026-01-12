@@ -1,10 +1,27 @@
 """Batch prediction script for Docker container."""
 import argparse
 import logging
-import pandas as pd
 import numpy as np
-import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+# Lazy imports for testing without torch
+pd = None
+torch = None
+AutoTokenizer = None
+AutoModelForSequenceClassification = None
+
+
+def _load_deps():
+    """Load heavy dependencies lazily."""
+    global pd, torch, AutoTokenizer, AutoModelForSequenceClassification
+    if pd is None:
+        import pandas
+        pd = pandas
+    if torch is None:
+        import torch as _torch
+        torch = _torch
+        from transformers import AutoTokenizer as _AT, AutoModelForSequenceClassification as _AM
+        AutoTokenizer = _AT
+        AutoModelForSequenceClassification = _AM
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -33,6 +50,7 @@ def class_to_label(class_id: int) -> str:
 
 def predict_single(text: str, tokenizer, model, threshold: float = 0.5) -> dict:
     """Predict single text."""
+    _load_deps()
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=128)
     
     with torch.no_grad():
@@ -61,6 +79,8 @@ def predict_batch(texts: list, tokenizer, model, threshold: float = 0.5) -> list
 
 
 def main():
+    _load_deps()
+    
     parser = argparse.ArgumentParser(description="Batch prediction for spam classifier")
     parser.add_argument("--input_path", type=str, required=True, help="Input CSV file with 'text' column")
     parser.add_argument("--output_path", type=str, required=True, help="Output CSV file for predictions")
